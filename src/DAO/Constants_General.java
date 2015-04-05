@@ -7,7 +7,9 @@ public class Constants_General {
 	public static final String EVENTCATEGORY_SPORT = "Sport";
 	public static final String EVENTCATEGORY_PARTY = "Party";
 	public static final String EVENTCATEGORY_OTHER = "Other";
-
+	
+	public static final String TOPBAR_HOME = "Home";
+	public static final String TOPBAR_CREATE = "Create Event";
 
 	public static final String EVENTJOINED = "Joined";
 	public static final String EVENTNOT_JOINED = "Other";

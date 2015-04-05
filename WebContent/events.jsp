@@ -15,7 +15,7 @@
 
 <head lang="en">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Activities | Find a Teammate</title>
+<title>Home | Find a Teammate</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -190,8 +190,8 @@
 
 		<div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
 			<ul class="am-nav am-nav-pills am-topbar-nav">
-				<li class="am-active"><a href="#">Activities</a></li>
-				<li><a href="create.jsp">Create Event</a></li>
+				<li class="am-active"><a href="#"><%=Constants_General.TOPBAR_HOME%></a></li>
+				<li><a href="create.jsp"><%=Constants_General.TOPBAR_CREATE%></a></li>
 			</ul>
 			<div class="am-topbar-right">
 				<a href="<%=userService.createLogoutURL("/index.jsp")%>"><button

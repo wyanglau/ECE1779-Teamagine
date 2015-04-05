@@ -53,7 +53,7 @@ public class LoginServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		
-		response.sendRedirect("activities.jsp");
+		response.sendRedirect("events.jsp");
 
 	}
 

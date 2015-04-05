@@ -301,8 +301,8 @@
 
 		<div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
 			<ul class="am-nav am-nav-pills am-topbar-nav">
-				<li><a href="events.jsp">Activities</a></li>
-				<li class="am-active"><a href="#">Create Event</a></li>
+				<li><a href="events.jsp"><%=Constants_General.TOPBAR_HOME%></a></li>
+				<li class="am-active"><a href="#"><%=Constants_General.TOPBAR_CREATE%></a></li>
 			</ul>
 			<div class="am-topbar-right">
 				<a href="<%=userService.createLogoutURL("/index.jsp")%>"><button
