@@ -412,14 +412,18 @@
 									<tr>
 										<td>
 											<div class="am-btn-group-stacked">
-												<div class="am-dropdown am-dropdown-up top-layer"
-													data-am-dropdown>
+												<div class="am-dropdown top-layer" data-am-dropdown>
 													<button
 														class="am-btn am-btn-default am-btn-xs am-dropdown-toggle">
 														Detail<span class="am-icon-caret-down"></span>
 													</button>
 													<div class="am-dropdown-content" style="min-width: 320px;">
-														<h4>Detailed Information</h4><%=e.getDescription()%></div>
+														<h4>Detailed Information</h4>
+														<ul>
+															<li>Contact: <u><%=e.getContact()%></u></li>
+															<li><%=e.getDescription()%></li>
+														</ul>
+													</div>
 												</div>
 												<button class="am-btn am-btn-success am-btn-xs">I'm
 													in</button>
