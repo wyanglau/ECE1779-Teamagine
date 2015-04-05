@@ -406,7 +406,7 @@
 
 									<%
 										List<Event> allEvents = Services.parse(Services.getAllEvents());
-										DateFormat fmt = new SimpleDateFormat("HH:mma,MMM.d");
+										DateFormat fmt = new SimpleDateFormat("hh:mma,MMM.d");
 										for (Event e : allEvents) {
 									%>
 									<tr>
