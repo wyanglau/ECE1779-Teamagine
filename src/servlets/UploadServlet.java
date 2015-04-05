@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import models.Event;
 import DAO.Constants_EventInfo;
-import DAO.Constants_EventMembers;
 import DAO.Constants_EventPeeps;
 import DAO.Constants_General;
 import DAO.DatastoreWriter;
