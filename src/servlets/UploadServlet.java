@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Event;
+import models.Peeps;
 import DAO.Constants_EventInfo;
+import DAO.Constants_EventPeeps;
 import DAO.Constants_General;
 import DAO.DatastoreWriter;
-import DAO.MemcacheWriter;
+import DAO.MemcacheOperator;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -68,7 +70,7 @@ public class UploadServlet extends HttpServlet {
 
 			// Initialize DatastoreWriter and MemcacheWriter
 			DatastoreWriter DSW = new DatastoreWriter();
-			MemcacheWriter MCW = new MemcacheWriter();
+			MemcacheOperator MCW = new MemcacheOperator();
 
 			// Parse information into correct format
 			long capacity = Long.parseLong(ca);
@@ -103,16 +105,24 @@ public class UploadServlet extends HttpServlet {
 			eventEntity.setProperty(Constants_EventInfo.EVENTDESCRIPTION,
 					description);
 
+			// Set DatastoreWriter entity to event info entity and write to data
+			// store
+			Key eventKey = DSW.writeToDatastoreAndRetrieveKey(eventEntity);
+
+			// Parse event key into ID
+			long eventID = eventKey.getId();
+
 			// Initialize peeps list by adding creator to it
 			List<String> eventMembers = new ArrayList<String>();
 			eventMembers.add(creator);
 
-			eventEntity.setProperty(Constants_EventInfo.EVENT_PEEPS,
+			Entity peepsEntity = new Entity(Constants_EventPeeps.TABLENAME);
+			peepsEntity.setProperty(Constants_EventPeeps.EVENTID, eventID);
+			peepsEntity.setProperty(Constants_EventPeeps.EVENTMEMBERS,
 					eventMembers);
-
 			// Set DatastoreWriter entity to event info entity and write to data
 			// store
-			Key eventKey = DSW.writeToDatastoreAndRetrieveKey(eventEntity);
+			DSW.writeToDatastoreAndRetrieveKey(peepsEntity);
 
 			// Create Event object
 			Event createdEvent = new Event();
@@ -120,6 +130,8 @@ public class UploadServlet extends HttpServlet {
 
 			// Write new event and its peeps list into mem cache
 			MCW.writeEventToMemcache(eventKey, createdEvent);
+			MCW.writeEventPeepsToMemcache(eventKey,
+					new Peeps().fromEntityAndKey(eventID, peepsEntity));
 
 			out.print(Constants_General.SUCCESS);
 		} catch (Exception e) {
@@ -128,5 +140,4 @@ public class UploadServlet extends HttpServlet {
 		}
 
 	}
-
 }

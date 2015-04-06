@@ -18,8 +18,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import models.Event;
+import models.Peeps;
 import DAO.Constants_EventInfo;
+import DAO.Constants_EventPeeps;
 import DAO.Constants_General;
+import DAO.MemcacheOperator;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -62,12 +65,26 @@ public class Services {
 		// others.
 		User user = UserServiceFactory.getUserService().getCurrentUser();
 		String email = user.getEmail();
+		List<Long> joinedID = new LinkedList<Long>();
+		List<Long> availableID = new LinkedList<Long>();
+
+		List<Peeps> peeps = retrieveAllPeeps();
+
+		for (Peeps p : peeps) {
+			List<String> emails = p.getPeeps();
+			if ((emails != null) && emails.contains(email)) {
+				joinedID.add(p.getId());
+			} else {
+				availableID.add(p.getId());
+			}
+		}
+
 		List<Event> joined = new LinkedList<Event>();
 		List<Event> available = new LinkedList<Event>();
 
 		for (Event e : allEvents) {
-			List<String> peeps = e.getPeeps();
-			if ((peeps != null) && (peeps.contains(email))) {
+
+			if (joinedID.contains(e.getKey().getId())) {
 				joined.add(e);
 			} else {
 				available.add(e);
@@ -80,6 +97,26 @@ public class Services {
 		result.put(Constants_General.JOINED_EVENTS, joined);
 
 		return result;
+
+	}
+
+	public static List<Peeps> retrieveAllPeeps() {
+
+		List<Peeps> peeps = new LinkedList<Peeps>();
+
+		Query query = new Query(Constants_EventPeeps.TABLENAME);
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+
+		PreparedQuery result = ds.prepare(query);
+
+		for (Entity e : result.asIterable()) {
+
+			peeps.add(new Peeps().fromEntityAndKey(
+					(long) e.getProperty(Constants_EventPeeps.EVENTID), e));
+
+		}
+
+		return peeps;
 
 	}
 
@@ -169,12 +206,7 @@ public class Services {
 	private static void setFilter(Query query, String table, String dateFilter,
 			String capacityFilter, String categoryFilter) {
 		if (categoryFilter != null) {
-			if (categoryFilter.equals(Constants_General.FILTER_CATEGORY_ALL)) {
-				query.setFilter(new FilterPredicate(
-						Constants_EventInfo.EVENTCATEGORY,
-						Query.FilterOperator.NOT_EQUAL, "asdfghjkl;'"));
-			}
-			else if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
+			if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
 
 				Filter f1 = new FilterPredicate(
 						Constants_EventInfo.EVENTCATEGORY,
@@ -202,18 +234,12 @@ public class Services {
 
 		if (capacityFilter != null) {
 
-			long lAll = Long.MAX_VALUE;
 			long l10 = 10;
 			long l20 = 20;
 			long l50 = 50;
 			Filter capQueryFilter = null;
 
 			switch (capacityFilter) {
-			case Constants_General.FILTER_CAPACITY_ALL:
-				capQueryFilter = new FilterPredicate(
-						Constants_EventInfo.EVENTCAPACITY,
-						Query.FilterOperator.LESS_THAN, lAll);
-				break;
 			case Constants_General.FILTER_CAPACITY_LESS_THAN_10:
 				capQueryFilter = new FilterPredicate(
 						Constants_EventInfo.EVENTCAPACITY,
@@ -281,17 +307,21 @@ public class Services {
 		String email = user.getEmail();
 
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		Entity entity = ds.get(key);
+		Query query = new Query(Constants_EventPeeps.TABLENAME);
+		query.setFilter(new FilterPredicate(Constants_EventPeeps.EVENTID,
+				Query.FilterOperator.EQUAL, key.getId()));
+		Entity peepMembers = ds.prepare(query).asSingleEntity();
 		@SuppressWarnings("unchecked")
-		List<String> peeps = (List<String>) entity
-				.getProperty(Constants_EventInfo.EVENT_PEEPS);
-		peeps.remove(email);
-		entity.setProperty(Constants_EventInfo.EVENT_PEEPS, peeps);
-		ds.put(entity);
+		List<String> peeps = (List<String>) peepMembers
+				.getProperty(Constants_EventPeeps.EVENTMEMBERS);
 
-		MemcacheService mem = MemcacheServiceFactory.getMemcacheService();
-		mem.put(entity.getKey(),
-				new Event().fromKeyAndEntity(entity.getKey(), entity));
+		peeps.remove(email);
+		peepMembers.setProperty(Constants_EventPeeps.EVENTMEMBERS, peeps);
+		ds.put(peepMembers);
+
+		MemcacheOperator mcw = new MemcacheOperator();
+		mcw.writeEventPeepsToMemcache(key,
+				new Peeps().fromEntityAndKey(key.getId(), peepMembers));
 
 	}
 
@@ -300,43 +330,54 @@ public class Services {
 		String email = user.getEmail();
 
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-		Entity entity = ds.get(key);
+
+		Query query = new Query(Constants_EventPeeps.TABLENAME);
+		query.setFilter(new FilterPredicate(Constants_EventPeeps.EVENTID,
+				Query.FilterOperator.EQUAL, key.getId()));
+		Entity peepMembers = ds.prepare(query).asSingleEntity();
 
 		@SuppressWarnings("unchecked")
-		List<String> peeps = (List<String>) entity
-				.getProperty(Constants_EventInfo.EVENT_PEEPS);
+		List<String> peeps = (List<String>) peepMembers
+				.getProperty(Constants_EventPeeps.EVENTMEMBERS);
 		if (peeps == null) {
 			peeps = new ArrayList<String>();
 
 		}
 		peeps.add(email);
-		entity.setProperty(Constants_EventInfo.EVENT_PEEPS, peeps);
-		ds.put(entity);
+		peepMembers.setProperty(Constants_EventPeeps.EVENTMEMBERS, peeps);
+		ds.put(peepMembers);
 
-		MemcacheService mem = MemcacheServiceFactory.getMemcacheService();
-		Event event = new Event().fromKeyAndEntity(entity.getKey(), entity);
-		mem.put(entity.getKey(), event);
+		MemcacheOperator mcw = new MemcacheOperator();
+		mcw.writeEventPeepsToMemcache(key,
+				new Peeps().fromEntityAndKey(key.getId(), peepMembers));
+
+		Event event = (Event) mcw.get(key);
+		if (event == null) {
+			event = new Event().fromKeyAndEntity(key, ds.get(key));
+		}
 
 		DateFormat fmt = new SimpleDateFormat("yyyy.mm.dd E HH:mma");
 		String content = "<p>Hi " + user.getNickname()
 				+ ", wecome to the event!</p>" + "<ul><li>Title:  <strong>"
-				+ event.getTitle() + " </strong></li>" + "<li>Category: <strong>"
-				+ event.getCategory() + " </strong></li>" + "<li>Start Time: <strong>"
+				+ event.getTitle() + " </strong></li>"
+				+ "<li>Category: <strong>" + event.getCategory()
+				+ " </strong></li>" + "<li>Start Time: <strong>"
 				+ fmt.format(event.getStartDateTime()) + "</strong></li>"
 				+ "<li>End Time: <strong>" + fmt.format(event.getEndDateTime())
-				+ "</strong></li>" + "<li>Address: <strong>" + event.getLocation() + "</strong></li>"
-				+ "<li>Contact: <strong>" + event.getContact() + "</strong></li>"
-				+ "</ul><p>Wish you a good time!</p>"
+				+ "</strong></li>" + "<li>Address: <strong>"
+				+ event.getLocation() + "</strong></li>"
+				+ "<li>Contact: <strong>" + event.getContact()
+				+ "</strong></li>" + "</ul><p>Wish you a good time!</p>"
 				+ "<br/><p>Sincerely,</p>" + "<p>Ryan, Harris, Ling</p>";
 
 		String subject = "[Teammate Finder] Successfully joined an event.";
 
 		sendNoticingMail(subject, content, email, user.getNickname());
 	}
-	
-	public void batchMail(String subject, String content, List<String> recipients, String name){
-		
-		
+
+	public void batchMail(String subject, String content,
+			List<String> recipients, String name) {
+
 	}
 
 	/**
@@ -353,11 +394,11 @@ public class Services {
 		Session session = Session.getDefaultInstance(prop);
 		Message msg = new MimeMessage(session);
 
-		
 		try {
 			msg.setFrom(new InternetAddress("wyang.lau@gmail.com",
 					"Find a Teammate"));
-			msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(recipients));
+			msg.addRecipients(Message.RecipientType.BCC,
+					InternetAddress.parse(recipients));
 			msg.setSubject(subject);
 			msg.setContent(content, "text/html;charset = gbk");
 			Transport.send(msg);
@@ -370,6 +411,5 @@ public class Services {
 		}
 
 	}
-
 
 }

@@ -13,13 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import models.Event;
 import service.Services;
+import DAO.Constants_EventPeeps;
 import DAO.Constants_General;
+import DAO.MemcacheOperator;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.users.User;
@@ -62,16 +66,24 @@ public class AbortEventServlet extends HttpServlet {
 
 			MemcacheService ms = MemcacheServiceFactory.getMemcacheService();
 			ms.delete(key);
+			ms.delete(MemcacheOperator.parsePeepsKey(key));
 
 			DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-
 			Entity entity = ds.get(key);
 			Event event = new Event().fromKeyAndEntity(key, entity);
 			ds.delete(key);
 
-			List<String> peeps = event.getPeeps();
-			if (!peeps.isEmpty()) {
-				sendEmail(event);
+			Query query = new Query(Constants_EventPeeps.TABLENAME);
+			query.setFilter(new FilterPredicate(Constants_EventPeeps.EVENTID,
+					Query.FilterOperator.EQUAL, key.getId()));
+			Entity result = ds.prepare(query).asSingleEntity();
+			ds.delete(result.getKey());
+
+			@SuppressWarnings("unchecked")
+			List<String> peeps = (List<String>) result
+					.getProperty(Constants_EventPeeps.EVENTMEMBERS);
+			if ((peeps != null) && (!peeps.isEmpty())) {
+				sendEmail(event, peeps);
 			}
 
 			out.print(Constants_General.SUCCESS);
@@ -84,7 +96,7 @@ public class AbortEventServlet extends HttpServlet {
 
 	}
 
-	private void sendEmail(Event event) {
+	private void sendEmail(Event event, List<String> peeps) {
 		User user = UserServiceFactory.getUserService().getCurrentUser();
 		DateFormat fmt = new SimpleDateFormat("yyyy.mm.dd E HH:mma");
 
@@ -106,11 +118,10 @@ public class AbortEventServlet extends HttpServlet {
 				+ "<br/><p>Sincerely,</p>" + "<p>Ryan, Harris, Ling</p>";
 
 		String recipients = "";
-		for (String r : event.getPeeps()) {
+		for (String r : peeps) {
 			recipients += r + ",";
 		}
 		recipients = recipients.substring(0, recipients.length() - 2);
-		s.sendNoticingMail(subject, content, recipients,
-				user.getNickname());
+		s.sendNoticingMail(subject, content, recipients, user.getNickname());
 	}
 }
