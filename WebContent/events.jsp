@@ -278,7 +278,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 				<div class="am-offcanvas-bar">
 
 					<div class="am-panel am-panel-primary">
-						<div class="am-panel-hd">Joined Activities</div>
+						<div class="am-panel-hd"><%=Constants_General.HOME_JOINED%></div>
 						<div class="am-scrollable-vertical-small">
 							<table
 								class="am-table am-table-striped am-table-hover am-text-sm">
@@ -415,7 +415,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 					<div class="am-panel am-panel-green">
 						<div class="am-panel-hd">
-							Available Activities <i
+							<%=Constants_General.HOME_AVAILABLE%> <i
 								class="am-icon-right am-icon-refresh am-icon-spin"></i>
 						</div>
 

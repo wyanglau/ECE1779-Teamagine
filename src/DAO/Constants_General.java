@@ -11,6 +11,9 @@ public class Constants_General {
 	public static final String TOPBAR_HOME = "Home";
 	public static final String TOPBAR_CREATE = "Create Event";
 
+	public static final String HOME_JOINED = "Joined Events";
+	public static final String HOME_AVAILABLE = "Available Events";
+	
 	public static final String EVENTJOINED = "Joined";
 	public static final String EVENTNOT_JOINED = "Other";
 	
