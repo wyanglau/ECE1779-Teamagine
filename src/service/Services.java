@@ -14,6 +14,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -322,6 +323,11 @@ public class Services {
 
 		sendNoticingMail(subject, content, email, user.getNickname());
 	}
+	
+	public void batchMail(String subject, String content, List<String> recipients, String name){
+		
+		
+	}
 
 	/**
 	 * Send a noticing email
@@ -332,17 +338,16 @@ public class Services {
 	 *            Email
 	 */
 	public void sendNoticingMail(String subject, String content,
-			String recipient, String nickName) {
+			String recipients, String nickName) {
 		Properties prop = new Properties();
 		Session session = Session.getDefaultInstance(prop);
-
 		Message msg = new MimeMessage(session);
 
+		
 		try {
 			msg.setFrom(new InternetAddress("wyang.lau@gmail.com",
 					"Find a Teammate"));
-			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					recipient, nickName));
+			msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(recipients));
 			msg.setSubject(subject);
 			msg.setContent(content, "text/html;charset = gbk");
 			Transport.send(msg);
@@ -355,5 +360,6 @@ public class Services {
 		}
 
 	}
+
 
 }
