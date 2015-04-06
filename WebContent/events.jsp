@@ -441,7 +441,7 @@
 									<td><select id="<%=Constants_General.FILTER_CATEGORY_ID%>"
 										data-am-selected="{btnWidth: 125, btnSize: 'sm', maxHeight: '1000px'}">
 											<option value="s"><%=Constants_General.FILTER_CATEGORY_DEFAULT%></option>
-											<option value="s"><%=Constants_General.FILTER_CATEGORY_ALL%></option>
+											<option value="p"><%=Constants_General.FILTER_CATEGORY_ALL%></option>
 											<option value="l"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
 											<option value="i"><%=Constants_General.FILTER_CATEGORY_PARTY%></option>
 											<option value="n"><%=Constants_General.FILTER_CATEGORY_SEMINAR%></option>
