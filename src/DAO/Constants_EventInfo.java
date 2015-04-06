@@ -13,6 +13,10 @@ public class Constants_EventInfo {
 	public static final String EVENTCONTACT = "contact";
 	public static final String EVENTDESCRIPTION = "description";
 	
+	public static final String EVENT_PEEPS="peeps";
+	
+	
+	
 
 	
 }

@@ -4,8 +4,11 @@
 <%@ page import="com.google.appengine.api.users.User"%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
+<%@ page import="com.google.appengine.api.datastore.KeyFactory"%>
 <%@ page import="java.util.Date"%>
+<%@ page import="java.util.Map"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.LinkedList"%>
 <%@ page import="java.text.DateFormat"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="models.Event"%>
@@ -165,79 +168,157 @@
 </style>
 
 <script type="text/javascript">
-var geocoder;
-var map;
-var infowindow;
-var marker;
+	var geocoder;
+	var map;
+	var infowindow;
+	var marker;
 	function initialize() {
 
-geocoder = new google.maps.Geocoder();
-  var mapOptions = {
+		geocoder = new google.maps.Geocoder();
+		var mapOptions = {
 			center : new google.maps.LatLng(43.663076, -79.395626),
 			zoom : 13,
 			mapTypeId : google.maps.MapTypeId.ROADMAP
 		};
-  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-  
-	// set marker and its infowindow
-	infowindow = new google.maps.InfoWindow();
-	marker = new google.maps.Marker(
-			{
-				map : map,
-			    anchorPoint: new google.maps.Point(0, -29)
-			});//Get list of rows in the table
+		map = new google.maps.Map(document.getElementById('map_canvas'),
+				mapOptions);
+
+		// set marker and its infowindow
+		infowindow = new google.maps.InfoWindow();
+		marker = new google.maps.Marker({
+			map : map,
+			anchorPoint : new google.maps.Point(0, -29)
+		});//Get list of rows in the table
 
 		// add event listener to table rows
-		var rows = document.getElementById("availableEventTableBody").getElementsByTagName("tr").length;
+		var rows = document.getElementById("availableEventTableBody")
+				.getElementsByTagName("tr").length;
 		var el;
-		for (var i = 0; i < rows; i++) { 
-			el = document.getElementById("singleAvailableEvent_"+i);
-			el.addEventListener("click", codeAddress , false);
+		for (var i = 0; i < rows; i++) {
+			el = document.getElementById("singleAvailableEvent_" + i);
+			el.addEventListener("click", codeAddress, false);
 		}
 	}
-	
-function codeAddress() {
-	infowindow.close();
-	marker.setVisible(false);
-  	var place = document.getElementById ("loc_" + event.currentTarget.id).innerText;
-  	var stringAddress = place;
-  	geocoder.geocode( { 'address': place}, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
-    	
-    	// If the place has a geometry, then present it on a map.
-	    if (results[0].geometry.viewport) {
-	      map.fitBounds(results[0].geometry.viewport);
-	    } else {
-	        map.setCenter(results[0].geometry.location);
 
-	      map.setZoom(17);  // Why 17? Because it looks good.
-	    }
-	    marker.setPosition(results[0].geometry.location);
-	    marker.setVisible(true);
-	    
-	    var address2 = '';
-	    if (results[0].address_components) {
-	      address2 = [
-	        (results[0].address_components[0] && results[0].address_components[0].short_name || ''),
-	        (results[0].address_components[1] && results[0].address_components[1].short_name || ''),
-	        (results[0].address_components[2] && results[0].address_components[2].short_name || ''),
-	        (results[0].address_components[3] && results[0].address_components[3].short_name || '')
-	      ].join(' ');
-	    }
+	function codeAddress() {
+		infowindow.close();
+		marker.setVisible(false);
+		var place = document.getElementById("loc_" + event.currentTarget.id).innerText;
+		var stringAddress = place;
+		geocoder
+				.geocode(
+						{
+							'address' : place
+						},
+						function(results, status) {
+							if (status == google.maps.GeocoderStatus.OK) {
 
-	    // trim address2 for everything that is displayed by stringAddress
-	    var address3 =  address2.replace(stringAddress.split(",")[0],"");
+								// If the place has a geometry, then present it on a map.
+								if (results[0].geometry.viewport) {
+									map.fitBounds(results[0].geometry.viewport);
+								} else {
+									map.setCenter(results[0].geometry.location);
 
-	    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address3);
-	    infowindow.open(map, marker);
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
-    }
-  });
-}
+									map.setZoom(17); // Why 17? Because it looks good.
+								}
+								marker
+										.setPosition(results[0].geometry.location);
+								marker.setVisible(true);
 
-google.maps.event.addDomListener(window, 'load', initialize);
-	
+								var address2 = '';
+								if (results[0].address_components) {
+									address2 = [
+											(results[0].address_components[0]
+													&& results[0].address_components[0].short_name || ''),
+											(results[0].address_components[1]
+													&& results[0].address_components[1].short_name || ''),
+											(results[0].address_components[2]
+													&& results[0].address_components[2].short_name || ''),
+											(results[0].address_components[3]
+													&& results[0].address_components[3].short_name || '') ]
+											.join(' ');
+								}
+
+								// trim address2 for everything that is displayed by stringAddress
+								var address3 = address2.replace(stringAddress
+										.split(",")[0], "");
+
+								infowindow.setContent('<div><strong>'
+										+ stringAddress.split(",")[0]
+										+ '</strong><br>' + address3);
+								infowindow.open(map, marker);
+							} else {
+								alert('Geocode was not successful for the following reason: '
+										+ status);
+							}
+						});
+	}
+
+	$(document).ready(
+			function() {
+				$("#filter_date,#filter_capacity,#filter_category").change(
+
+						function() {
+							$.ajax({
+								type : "POST",
+								url : "FilterServlet",
+								data : {
+									filter_date : $("#filter_date").find(
+											"option:selected").text(),
+									filter_capacity : $("#filter_capacity")
+											.find("option:selected").text(),
+									filter_category : $("#filter_category")
+											.find("option:selected").text(),
+								},
+								success : function(result) {
+									window.location.reload();
+
+								}
+							})
+
+						})
+			});
+
+	function quit(key) {
+		var r = confirm("Do you really want to quit this event ?");
+		if (r == true) {
+			$.ajax({
+				type : "POST",
+				url : "QuitEventServelt",
+				data : {
+					keyString : key
+				},
+				success : function(result) {
+					if (result != "success") {
+						alert("Error incurred. Exception message: " + result)
+					} else {
+						window.location.reload();
+					}
+				}
+
+			})
+		}
+	}
+
+	function join(key) {
+		$.ajax({
+			type : "POST",
+			url : "JoinEventServlet",
+			data : {
+				keyString : key
+			},
+			success : function(result) {
+				if (result != "success") {
+					alert("Error incurred. Exception message: " + result)
+				} else {
+					window.location.reload();
+				}
+			}
+
+		})
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 
 </head>
@@ -297,119 +378,27 @@ google.maps.event.addDomListener(window, 'load', initialize);
 								</thead>
 
 								<tbody>
+									<%
+										Map<String, List<Event>> batch = Services.retrieveAllEvents(null,
+												null, null);
+										List<Event> availables = batch
+												.get(Constants_General.AVAILABLE_EVENTS);
+										List<Event> joined = batch.get(Constants_General.JOINED_EVENTS);
+										DateFormat fmt = new SimpleDateFormat("HH:mma,MMM.d");
+										for (Event e : joined) {
+									%>
 									<tr>
-										<td><button class="am-btn am-btn-danger am-btn-xs">Quit</button></td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
+										<td><button class="am-btn am-btn-danger am-btn-xs"
+												onclick="quit('<%=KeyFactory.keyToString(e.getKey())%>')">Quit</button></td>
+										<td><%=e.getTitle()%></td>
+										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
+											<%=fmt.format(e.getEndDateTime())%></td>
+										<td><%=e.getLocation()%></td>
+										<td><%=e.getContact()%></td>
 									</tr>
-									<tr>
-										<td><button class="am-btn am-btn-danger am-btn-xs">Quit</button></td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td><button class="am-btn am-btn-danger am-btn-xs">Quit</button></td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-									<tr>
-										<td>Canc</td>
-										<td>L.A.C v.s. Boston</td>
-										<td>2015-3-10 6:00pm to 10:00pm</td>
-										<td>11Dunbloor Rd, Concert Center</td>
-										<td>wyang.lau@gmail.com</td>
-									</tr>
-
+									<%
+										}
+									%>
 								</tbody>
 
 							</table>
@@ -419,34 +408,34 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 					<div class="am-panel am-panel-green">
 						<div class="am-panel-hd">
-							<%=Constants_General.HOME_AVAILABLE%> <i
-								class="am-icon-right am-icon-refresh am-icon-spin"></i>
+							<%=Constants_General.HOME_AVAILABLE%>
+							<i class="am-icon-right am-icon-refresh am-icon-spin"></i>
 						</div>
 
 						<table class="am-table">
 							<tbody>
 								<tr>
-									<td><select
-										data-am-selected="{btnWidth: 120, btnSize: 'sm', maxHeight: '1000px'}">
-											<option value="a">In 7 Days</option>
-											<option value="b">In a month</option>
-											<option value="o">Today</option>
-											<option value="m">Others</option>
+									<td><select id=<%=Constants_General.FILTER_DATE_ID%>
+										data-am-selected="{btnWidth: 135, btnSize: 'sm', maxHeight: '1000px'}">
+											<option value="r"><%=Constants_General.FILTER_DATE_DEFAULT%></option>
+											<option value="y"><%=Constants_General.SORT_DATE_ASCENDING%></option>
+											<option value="a"><%=Constants_General.SORT_DATE_DESCENDING%></option>
 									</select></td>
-									<td><select
-										data-am-selected="{btnWidth: 180, btnSize: 'sm', maxHeight: '1000px'}">
-											<option value="a">Downtown Toronto</option>
-											<option value="b">North York</option>
-											<option value="o">Mississauga</option>
-											<option value="m">Scarborough</option>
-											<option value="e">Others</option>
+									<td><select id="<%=Constants_General.FILTER_CAPACITY_ID%>"
+										data-am-selected="{btnWidth: 190, btnSize: 'sm', maxHeight: '1000px'}">
+											<option value="n"><%=Constants_General.FILTER_CAPACITY_DEFAULT%></option>
+											<option value="h"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_10%></option>
+											<option value="a"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_20%></option>
+											<option value="r"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_50%></option>
+											<option value="i"><%=Constants_General.FILTER_CAPACITY_MORE_THAN_50%></option>
 									</select></td>
-									<td><select
-										data-am-selected="{btnWidth: 120, btnSize: 'sm', maxHeight: '1000px'}">
-											<option value="study"><%=Constants_General.EVENTCATEGORY_STUDY%></option>
-											<option value="sport"><%=Constants_General.EVENTCATEGORY_SPORT%></option>
-											<option value="party"><%=Constants_General.EVENTCATEGORY_PARTY%></option>
-											<option value="other"><%=Constants_General.EVENTCATEGORY_OTHER%></option>
+									<td><select id="<%=Constants_General.FILTER_CATEGORY_ID%>"
+										data-am-selected="{btnWidth: 125, btnSize: 'sm', maxHeight: '1000px'}">
+											<option value="s"><%=Constants_General.FILTER_CATEGORY_DEFAULT%></option>
+											<option value="l"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
+											<option value="i"><%=Constants_General.FILTER_CATEGORY_PARTY%></option>
+											<option value="n"><%=Constants_General.FILTER_CATEGORY_SEMINAR%></option>
+											<option value="g"><%=Constants_General.FILTER_OTHERS%></option>
 									</select></td>
 
 
@@ -456,9 +445,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 						<div class="am-scrollable-vertical-large">
 
 							<table
-								class="am-table am-table-striped am-table-hover am-text-sm"
-								>
-								
+								class="am-table am-table-striped am-table-hover am-text-sm">
+
 								<thead>
 									<tr>
 										<th></th>
@@ -467,15 +455,29 @@ google.maps.event.addDomListener(window, 'load', initialize);
 										<th>Location</th>
 									</tr>
 								</thead>
-								<tbody 
-								id = "availableEventTableBody">
+								<tbody id="availableEventTableBody">
 									<%
-										List<Event> allEvents = Services.parse(Services.getAllEvents());
-										DateFormat fmt = new SimpleDateFormat("hh:mma,MMM.d");
-										for (int i = 0; i < allEvents.size(); i++) {
-										Event e = allEvents.get(i);
+										String dateFilter = (String) session
+												.getAttribute(Constants_General.FILTER_DATE_ID);
+										String capFilter = (String) session
+												.getAttribute(Constants_General.FILTER_CAPACITY_ID);
+										String cateFilter = (String) session
+												.getAttribute(Constants_General.FILTER_CATEGORY_ID);
 									%>
-									<tr id = "singleAvailableEvent_<%=i%>">
+									<%
+										if ((dateFilter != null) || (capFilter != null)
+												|| (cateFilter != null)) {
+											availables = Services.retrieveAllEvents(dateFilter, capFilter,
+													cateFilter).get(Constants_General.AVAILABLE_EVENTS);
+
+										}
+										session.setAttribute(Constants_General.FILTER_DATE_ID, null);
+										session.setAttribute(Constants_General.FILTER_CAPACITY_ID, null);
+										session.setAttribute(Constants_General.FILTER_CATEGORY_ID, null);
+										for (int i = 0; i < availables.size(); i++) {
+											Event e = availables.get(i);
+									%>
+									<tr id="singleAvailableEvent_<%=i%>">
 										<td>
 											<div class="am-btn-group-stacked">
 												<div class="am-dropdown top-layer" data-am-dropdown>
@@ -486,19 +488,22 @@ google.maps.event.addDomListener(window, 'load', initialize);
 													<div class="am-dropdown-content" style="min-width: 320px;">
 														<h4>Detailed Information</h4>
 														<ul>
+															<li>Category:<%=e.getCategory()%></li>
+															<li>Capacity: <%=e.getCapacity()%></li>
 															<li>Contact: <u><%=e.getContact()%></u></li>
 															<li><%=e.getDescription()%></li>
 														</ul>
 													</div>
 												</div>
-												<button class="am-btn am-btn-success am-btn-xs">I'm
+												<button class="am-btn am-btn-success am-btn-xs"
+													onclick="join('<%=KeyFactory.keyToString(e.getKey())%>')">I'm
 													in</button>
 											</div>
 										</td>
 										<td><%=e.getTitle()%></td>
 										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
 											<%=fmt.format(e.getEndDateTime())%></td>
-										<td id = loc_singleAvailableEvent_<%=i%>><%=e.getLocation()%></td>
+										<td id=loc_singleAvailableEvent_ <%=i%>><%=e.getLocation()%></td>
 										<td></td>
 									</tr>
 									<%

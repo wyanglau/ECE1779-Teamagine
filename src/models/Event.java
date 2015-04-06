@@ -2,16 +2,15 @@ package models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 
 import DAO.*;
 
-public class Event implements Serializable
-{
+public class Event implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
 
 	private Key key;
 	private String creator;
@@ -23,23 +22,34 @@ public class Event implements Serializable
 	private String location;
 	private String contact;
 	private String description;
-	
-	public Event ()
-	{
+	private List<String> peeps;
+
+	public Event() {
 	}
-	
-	public void fromKeyAndEntity (Key eventKey, Entity eventEntity)
-	{
+
+	public Event fromKeyAndEntity(Key eventKey, Entity eventEntity) {
 		this.key = eventKey;
-		this.creator = (String) eventEntity.getProperty(Constants_EventInfo.EVENTCREATOR);
-		this.title = (String) eventEntity.getProperty(Constants_EventInfo.EVENTTITLE);
-		this.category = (String) eventEntity.getProperty(Constants_EventInfo.EVENTCATEGORY);
-		this.capacity = (long) eventEntity.getProperty(Constants_EventInfo.EVENTCAPACITY);
-		this.startDateTime = (Date) eventEntity.getProperty(Constants_EventInfo.EVENTSTARTDATETIME);
-		this.endDateTime = (Date) eventEntity.getProperty(Constants_EventInfo.EVENTENDDATETIME);
-		this.location = (String) eventEntity.getProperty(Constants_EventInfo.EVENTLOCATION);
-		this.contact = (String) eventEntity.getProperty(Constants_EventInfo.EVENTCONTACT);
-		this.description = (String) eventEntity.getProperty(Constants_EventInfo.EVENTDESCRIPTION);
+		this.creator = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTCREATOR);
+		this.title = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTTITLE);
+		this.category = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTCATEGORY);
+		this.capacity = (long) eventEntity
+				.getProperty(Constants_EventInfo.EVENTCAPACITY);
+		this.startDateTime = (Date) eventEntity
+				.getProperty(Constants_EventInfo.EVENTSTARTDATETIME);
+		this.endDateTime = (Date) eventEntity
+				.getProperty(Constants_EventInfo.EVENTENDDATETIME);
+		this.location = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTLOCATION);
+		this.contact = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTCONTACT);
+		this.description = (String) eventEntity
+				.getProperty(Constants_EventInfo.EVENTDESCRIPTION);
+		this.peeps = (List<String>) eventEntity
+				.getProperty(Constants_EventInfo.EVENT_PEEPS);
+		return this;
 	}
 	
 	public Key getKey()
@@ -122,5 +132,13 @@ public class Event implements Serializable
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	public List<String> getPeeps() {
+		return peeps;
+	}
+
+	public void setPeeps(List<String> peeps) {
+		this.peeps = peeps;
 	}
 }

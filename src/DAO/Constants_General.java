@@ -26,4 +26,30 @@ public class Constants_General {
 	public static final String ERROR="error";
 	
 	public static final String ALL_EVENTS = "allevents";
+
+	public static final String FILTER_OTHERS = "Others";
+	public static final String FILTER_DATE_ID = "filter_date";
+	public static final String FILTER_DATE_DEFAULT = "Time of Period";
+	public static final String FILTER_DATE_IN_7_DAYS = "In 7 Days";
+	public static final String FILTER_DATE_MONTH = "In a month";
+	public static final String FILTER_DATE_TODAY = "Today";
+	public static final String SORT_DATE_ASCENDING="Order in Ascending";
+	public static final String SORT_DATE_DESCENDING="Order in Descending";
+
+	public static final String FILTER_CAPACITY_ID = "filter_capacity";
+	public static final String FILTER_CAPACITY_DEFAULT = "Number of Participants";
+	public static final String FILTER_CAPACITY_LESS_THAN_10 = "10-";
+	public static final String FILTER_CAPACITY_LESS_THAN_20 = "10-20";
+	public static final String FILTER_CAPACITY_LESS_THAN_50 = "20-50";
+	public static final String FILTER_CAPACITY_MORE_THAN_50 = "50+";
+
+	public static final String FILTER_CATEGORY_ID = "filter_category";
+	public static final String FILTER_CATEGORY_DEFAULT = "Category";
+	public static final String FILTER_CATEGORY_SPORT = "Sport";
+	public static final String FILTER_CATEGORY_PARTY = "Party";
+	public static final String FILTER_CATEGORY_SEMINAR = "Seminar";
+	
+	public static final String AVAILABLE_EVENTS="available";
+	public static final String JOINED_EVENTS="joined";
+
 }

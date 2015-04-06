@@ -3,6 +3,14 @@
 <%@ page import="com.google.appengine.api.users.User"%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
+<%@ page import="service.Services"%>
+<%@ page import="models.Event"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.LinkedList"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.google.appengine.api.datastore.KeyFactory"%>
 <%@page import="DAO.Constants_General"%>
 <!DOCTYPE html>
 <html>
@@ -286,6 +294,29 @@
 			}
 		})
 	}
+	function abort(key) {
+
+		var r = confirm("Do you really want to abort this event ?");
+		if (r == true) {
+			$
+					.ajax({
+						type : "POST",
+						url : "AbortEventServlet",
+						data : {
+							keystring : key,
+						},
+						success : function(result) {
+							if (result == "success") {
+								window.location.reload();
+							} else {
+								alert("Error incurred, try again later. Error message :"
+										+ result);
+							}
+						}
+					})
+		}
+
+	}
 </script>
 
 </head>
@@ -346,14 +377,14 @@
 
 									<div class="am-form-group">
 										<select id="create_category" name="create_category">
-											<option value="study"><%=Constants_General.EVENTCATEGORY_STUDY%></option>
-											<option value="sport"><%=Constants_General.EVENTCATEGORY_SPORT%></option>
-											<option value="party"><%=Constants_General.EVENTCATEGORY_PARTY%></option>
-											<option value="other"><%=Constants_General.EVENTCATEGORY_OTHER%></option>
+											<option value="sport">Sport</option>
+											<option value="party">Party</option>
+											<option value="seminar">Seminar</option>
+											<option value="others">Others</option>
 										</select> <span class="am-form-caret"></span>
 									</div>
 									<div class="am-form-group">
-										<input type="number" id="create_capacity" min="2"
+										<input type="number" id="create_capacity" min="1"
 											name="create_capacity"
 											placeholder="Recommend Number of 
 											Participants. (Numbers Only)"
@@ -439,17 +470,26 @@
 						</tr>
 					</thead>
 					<tbody>
+						<%
+							List<Event> own = Services.retrieveHostersEvents();
+							DateFormat fmt = new SimpleDateFormat("HH:mma,MMM.d");
+							for (Event e : own) {
+						%>
 						<tr>
-							<td>L.A.C v.s. Boston</td>
-							<td>Sport</td>
-							<td>1024</td>
-							<td>2015-3-10 6:00pm</td>
-							<td>2015-3-10 10:00pm</td>
-							<td>11Dunbloor Rd, Concert Center</td>
-							<td>wyang.lau@gmail.com</td>
-							<td>We will serve BBQ and cokes.</td>
-							<td><button class="am-btn am-btn-danger am-btn-xs">Abort</button></td>
+							<td><%=e.getTitle()%></td>
+							<td><%=e.getCategory()%></td>
+							<td><%=e.getCapacity()%></td>
+							<td><%=fmt.format(e.getStartDateTime())%></td>
+							<td><%=fmt.format(e.getEndDateTime())%></td>
+							<td><%=e.getLocation()%></td>
+							<td><%=e.getContact()%></td>
+							<td><%=e.getDescription()%></td>
+							<td><button class="am-btn am-btn-danger am-btn-xs"
+									onclick="abort('<%=KeyFactory.keyToString(e.getKey())%>')">Abort</button></td>
 						</tr>
+						<%
+							}
+						%>
 					</tbody>
 				</table>
 			</div>

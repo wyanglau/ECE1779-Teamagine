@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import models.Event;
 import DAO.Constants_EventInfo;
-import DAO.Constants_EventPeeps;
 import DAO.Constants_General;
 import DAO.DatastoreWriter;
 import DAO.MemcacheWriter;
@@ -105,27 +103,16 @@ public class UploadServlet extends HttpServlet {
 			eventEntity.setProperty(Constants_EventInfo.EVENTDESCRIPTION,
 					description);
 
-			// Set DatastoreWriter entity to event info entity and write to data
-			// store
-			Key eventKey = DSW.writeToDatastoreAndRetrieveKey(eventEntity);
-
-			// Parse event key into ID
-			long eventID = eventKey.getId();
-
 			// Initialize peeps list by adding creator to it
 			List<String> eventMembers = new ArrayList<String>();
 			eventMembers.add(creator);
 
-			// build the event peeps entity object and save it into the data
-			// store
-			Entity peepsEntity = new Entity(Constants_EventPeeps.TABLENAME);
-			peepsEntity.setProperty(Constants_EventPeeps.EVENTID, eventID);
-			peepsEntity.setProperty(Constants_EventPeeps.EVENTMEMBERS,
+			eventEntity.setProperty(Constants_EventInfo.EVENT_PEEPS,
 					eventMembers);
 
 			// Set DatastoreWriter entity to event info entity and write to data
 			// store
-			DSW.writeToDatastoreAndRetrieveKey(peepsEntity);
+			Key eventKey = DSW.writeToDatastoreAndRetrieveKey(eventEntity);
 
 			// Create Event object
 			Event createdEvent = new Event();
@@ -133,7 +120,6 @@ public class UploadServlet extends HttpServlet {
 
 			// Write new event and its peeps list into mem cache
 			MCW.writeEventToMemcache(eventKey, createdEvent);
-			MCW.writeEventPeepsToMemcache(eventKey, peepsEntity);
 
 			out.print(Constants_General.SUCCESS);
 		} catch (Exception e) {
