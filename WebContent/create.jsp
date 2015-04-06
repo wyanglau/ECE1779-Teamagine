@@ -212,16 +212,21 @@
 			    marker.setPosition(place.geometry.location);
 			    marker.setVisible(true);
 			    
-			    var address = '';
+			    
+			    var address2 = '';
 			    if (place.address_components) {
-			      address = [
+			      address2 = [
 			        (place.address_components[0] && place.address_components[0].short_name || ''),
 			        (place.address_components[1] && place.address_components[1].short_name || ''),
-			        (place.address_components[2] && place.address_components[2].short_name || '')
+			        (place.address_components[2] && place.address_components[2].short_name || ''),
+			        (place.address_components[3] && place.address_components[3].short_name || '')
 			      ].join(' ');
 			    }
+			    
+			 	// trim address2 for everything that is displayed by stringAddress
+			    var address3 =  address2.replace(stringAddress.split(",")[0],"")
 
-			    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address);
+			    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address3);
 			    infowindow.open(map, marker);
 			  });
 

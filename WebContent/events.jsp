@@ -214,17 +214,21 @@ function codeAddress() {
 	    }
 	    marker.setPosition(results[0].geometry.location);
 	    marker.setVisible(true);
-
+	    
 	    var address2 = '';
 	    if (results[0].address_components) {
 	      address2 = [
 	        (results[0].address_components[0] && results[0].address_components[0].short_name || ''),
 	        (results[0].address_components[1] && results[0].address_components[1].short_name || ''),
-	        (results[0].address_components[2] && results[0].address_components[2].short_name || '')
+	        (results[0].address_components[2] && results[0].address_components[2].short_name || ''),
+	        (results[0].address_components[3] && results[0].address_components[3].short_name || '')
 	      ].join(' ');
 	    }
 
-	    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address2);
+	    // trim address2 for everything that is displayed by stringAddress
+	    var address3 =  address2.replace(stringAddress.split(",")[0],"");
+
+	    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address3);
 	    infowindow.open(map, marker);
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
