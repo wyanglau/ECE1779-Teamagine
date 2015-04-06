@@ -1,4 +1,3 @@
-<%@page import="DAO.Constants_General"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="com.google.appengine.api.users.User"%>
@@ -13,12 +12,13 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="models.Event"%>
 <%@ page import="service.Services"%>
+<%@page import="DAO.Constants_General"%>
 <!DOCTYPE html>
 <html>
 
 <head lang="en">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Home | Find a Teammate</title>
+<title><%=Constants_General.SITE_TITLEHOME%> | <%=Constants_General.SITE_LOGO%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -190,12 +190,21 @@
 			anchorPoint : new google.maps.Point(0, -29)
 		});//Get list of rows in the table
 
-		// add event listener to table rows
+		// add event listener to table rows of availableEventTable
 		var rows = document.getElementById("availableEventTableBody")
 				.getElementsByTagName("tr").length;
 		var el;
 		for (var i = 0; i < rows; i++) {
 			el = document.getElementById("singleAvailableEvent_" + i);
+			el.addEventListener("click", codeAddress, false);
+		}
+		
+		// add event listener to table rows of joinedEventTable
+		var rows = document.getElementById("joinedEventTableBody")
+				.getElementsByTagName("tr").length;
+		var el;
+		for (var i = 0; i < rows; i++) {
+			el = document.getElementById("singleJoinedEvent_" + i);
 			el.addEventListener("click", codeAddress, false);
 		}
 	}
@@ -329,7 +338,7 @@
 	%>
 	<header class="am-topbar am-topbar-fixed-top">
 		<h1 class="am-topbar-brand">
-			<a href="#"> Teamangine </a>
+			<a href="#"><%=Constants_General.SITE_LOGO%></a>
 		</h1>
 
 		<div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
@@ -341,9 +350,7 @@
 				<a href="<%=userService.createLogoutURL("/index.jsp")%>"><button
 						class="am-btn am-btn-success am-topbar-btn am-btn-sm">Logout</button></a>
 			</div>
-			<div class=" am-topbar-right am-topbar-text">
-				Hi
-				<%=user.getNickname()%>, how are you doing?
+			<div class=" am-topbar-right am-topbar-text"><%=Constants_General.TOPBAR_GREET_PRE%> <%=user.getNickname()%><%=Constants_General.TOPBAR_GREET_POST%>
 			</div>
 
 
@@ -377,7 +384,7 @@
 									</tr>
 								</thead>
 
-								<tbody>
+								<tbody id="joinedEventTableBody">
 									<%
 										Map<String, List<Event>> batch = Services.retrieveAllEvents(null,
 												null, null);
@@ -385,15 +392,16 @@
 												.get(Constants_General.AVAILABLE_EVENTS);
 										List<Event> joined = batch.get(Constants_General.JOINED_EVENTS);
 										DateFormat fmt = new SimpleDateFormat("hh:mma,MMM.d");
-										for (Event e : joined) {
+										for (int i = 0; i < joined.size(); i++) {
+											Event e = joined.get(i);
 									%>
-									<tr>
+									<tr id="singleJoinedEvent_<%=i%>">
 										<td><button class="am-btn am-btn-danger am-btn-xs"
 												onclick="quit('<%=KeyFactory.keyToString(e.getKey())%>')">Quit</button></td>
 										<td><%=e.getTitle()%></td>
 										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
 											<%=fmt.format(e.getEndDateTime())%></td>
-										<td><%=e.getLocation()%></td>
+										<td id=loc_singleJoinedEvent_<%=i%>><%=e.getLocation()%></td>
 										<td><%=e.getContact()%></td>
 									</tr>
 									<%
@@ -522,8 +530,7 @@
 
 	<footer class="my-footer">
 		<p>
-			Find a teammate<br> <small>© 2015Winter | ECE1779 |
-				Ryan/Harris/Ling </small>
+			<%=Constants_General.SITE_SLOGAN%><br> <small><%=Constants_General.SITE_FOOTER%></small>
 		</p>
 	</footer>
 </body>

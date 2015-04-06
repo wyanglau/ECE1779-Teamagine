@@ -17,7 +17,7 @@
 
 <head lang="en">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Management | Find a Teammate</title>
+<title><%=Constants_General.SITE_TITLECREATE%> | <%=Constants_General.SITE_LOGO%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -247,14 +247,14 @@
 	
 	$(function() {
 		$('.form_datetime-from').datetimepicker({
-			format : 'yyyy-mm-dd hh:ii',
+			format : 'yyyy-mm-dd HH:iiP',
 			autoclose : true,
 			todayBtn : true,
 			minuteStep : 10
 		});
 
 		$('.form_datetime-to').datetimepicker({
-			format : 'yyyy-mm-dd hh:ii',
+			format : 'yyyy-mm-dd HH:iiP',
 			autoclose : true,
 			todayBtn : true,
 			minuteStep : 10
@@ -327,7 +327,7 @@
 	%>
 	<header class="am-topbar am-topbar-fixed-top">
 		<h1 class="am-topbar-brand">
-			<a href="#"> Teamangine </a>
+			<a href="#"><%=Constants_General.SITE_LOGO%></a>
 		</h1>
 
 		<div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
@@ -339,9 +339,7 @@
 				<a href="<%=userService.createLogoutURL("/index.jsp")%>"><button
 						class="am-btn am-btn-success am-topbar-btn am-btn-sm">Logout</button></a>
 			</div>
-			<div class=" am-topbar-right am-topbar-text">
-				Hi
-				<%=user.getNickname()%>, how are you doing?
+			<div class=" am-topbar-right am-topbar-text"><%=Constants_General.TOPBAR_GREET_PRE%> <%=user.getNickname()%><%=Constants_General.TOPBAR_GREET_POST%>
 			</div>
 
 
@@ -361,7 +359,7 @@
 				<div class="am-offcanvas-bar">
 
 					<div class="am-panel am-panel-primary">
-						<div class="am-panel-hd">Create an Event</div>
+						<div class="am-panel-hd"><%=Constants_General.CREATE_NEW%></div>
 						<div class="am-scrollable-vertical-large">
 
 
@@ -377,10 +375,10 @@
 
 									<div class="am-form-group">
 										<select id="create_category" name="create_category">
-											<option value="sport">Sport</option>
-											<option value="party">Party</option>
-											<option value="seminar">Seminar</option>
-											<option value="others">Others</option>
+											<option value="sport"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
+											<option value="party"><%=Constants_General.FILTER_CATEGORY_PARTY%></option>
+											<option value="seminar"><%=Constants_General.FILTER_CATEGORY_SEMINAR%></option>
+											<option value="others"><%=Constants_General.FILTER_OTHERS%></option>
 										</select> <span class="am-form-caret"></span>
 									</div>
 									<div class="am-form-group">
@@ -451,7 +449,7 @@
 	</div>
 	<div class="am-u-md-left-right">
 		<div class="am-panel am-panel-green">
-			<div class="am-panel-hd">Manage Events You Created</div>
+			<div class="am-panel-hd"><%=Constants_General.CREATE_MANAGE%></div>
 
 			<div class="am-scrollable-vertical">
 				<table class="am-table am-table-striped am-table-hover am-text-sm">
@@ -499,8 +497,7 @@
 	</div>
 	<footer class="my-footer">
 		<p>
-			Find a teammate<br> <small>© 2015Winter | ECE1779 |
-				Ryan/Harris/Ling </small>
+			<%=Constants_General.SITE_SLOGAN%><br> <small><%=Constants_General.SITE_FOOTER%></small>
 		</p>
 	</footer>
 </body>

@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@page import="DAO.Constants_General"%>
 <!DOCTYPE html>
 <html>
 <head lang="en">
 <meta charset="UTF-8">
-<title>Teammate Finder</title>
+<title><%=Constants_General.SITE_LOGO%> | <%=Constants_General.SITE_SLOGAN%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -138,7 +139,7 @@
 			</form>
 			<hr>
 			<div align=center>
-				<p>- 2015Winter ECE1779.Group14 -</p>
+				<small><%=Constants_General.SITE_FOOTER%></small>
 			</div>
 		</div>
 	</div>

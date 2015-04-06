@@ -1,18 +1,23 @@
 package DAO;
 
 public class Constants_General {
-	
-	public static final String EVENTCATEGORY_ALL   = "All";
-	public static final String EVENTCATEGORY_STUDY = "Study";
-	public static final String EVENTCATEGORY_SPORT = "Sport";
-	public static final String EVENTCATEGORY_PARTY = "Party";
-	public static final String EVENTCATEGORY_OTHER = "Other";
-	
+
+	public static final String SITE_LOGO = "Teamagine";
+	public static final String SITE_SLOGAN = "Find a Teammate";
+	public static final String SITE_TITLEHOME = "Home";
+	public static final String SITE_TITLECREATE = "Management";
+	public static final String SITE_FOOTER = "© 2015Winter | ECE1779 | Ryan/Harris/Ling ";
+
 	public static final String TOPBAR_HOME = "Home";
 	public static final String TOPBAR_CREATE = "Create Event";
+	public static final String TOPBAR_GREET_PRE = "Hi";
+	public static final String TOPBAR_GREET_POST = ", how are you doing?";
 
 	public static final String HOME_JOINED = "Joined Events";
 	public static final String HOME_AVAILABLE = "Available Events";
+
+	public static final String CREATE_NEW = "Create an Event";
+	public static final String CREATE_MANAGE = "Manage Events You Created";
 	
 	public static final String EVENTJOINED = "Joined";
 	public static final String EVENTNOT_JOINED = "Other";
@@ -38,7 +43,7 @@ public class Constants_General {
 
 	public static final String FILTER_CAPACITY_ID = "filter_capacity";
 	public static final String FILTER_CAPACITY_DEFAULT = "Number of Participants";
-	public static final String FILTER_CAPACITY_LESS_THAN_10 = "10-";
+	public static final String FILTER_CAPACITY_LESS_THAN_10 = "1-10";
 	public static final String FILTER_CAPACITY_LESS_THAN_20 = "10-20";
 	public static final String FILTER_CAPACITY_LESS_THAN_50 = "20-50";
 	public static final String FILTER_CAPACITY_MORE_THAN_50 = "50+";
