@@ -191,15 +191,22 @@
 				{
 					map : map,
 				    anchorPoint: new google.maps.Point(0, -29)
-				});
+				});//Get list of rows in the table
+		var table = document.getElementById("toppings");
+		var rows = table.getElementsByTagName("tr");
 
-		google.maps.event.addListener(marker, 'click', function() {
-			new google.maps.InfoWindow({
-				content : marker.title
-			}).open(map, marker);
-		});
+		var selectedRow;
+
+		//Row callback; reset the previously selected row and select the new one
+		function SelectRow(row) {
+		    if (selectedRow !== undefined) {
+		        selectedRow.style.background = "#d8da3d";
+		    }
+		    selectedRow = row;
+		    selectedRow.style.background = "white";
+		}
 		
-		  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			    infowindow.close();
 			    marker.setVisible(false);
 			    var place = autocomplete.getPlace();
