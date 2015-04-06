@@ -322,7 +322,7 @@
 </script>
 
 </head>
-<body onload="initialize()">
+<body>
 	<%
 		UserService userService = UserServiceFactory.getUserService();
 		User user = userService.getCurrentUser();
@@ -503,7 +503,7 @@
 										<td><%=e.getTitle()%></td>
 										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
 											<%=fmt.format(e.getEndDateTime())%></td>
-										<td id=loc_singleAvailableEvent_ <%=i%>><%=e.getLocation()%></td>
+										<td id=loc_singleAvailableEvent_<%=i%>><%=e.getLocation()%></td>
 										<td></td>
 									</tr>
 									<%
