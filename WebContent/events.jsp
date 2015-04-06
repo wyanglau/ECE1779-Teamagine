@@ -384,7 +384,7 @@
 										List<Event> availables = batch
 												.get(Constants_General.AVAILABLE_EVENTS);
 										List<Event> joined = batch.get(Constants_General.JOINED_EVENTS);
-										DateFormat fmt = new SimpleDateFormat("HH:mma,MMM.d");
+										DateFormat fmt = new SimpleDateFormat("hh:mma,MMM.d");
 										for (Event e : joined) {
 									%>
 									<tr>
