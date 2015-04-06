@@ -191,25 +191,13 @@
 				{
 					map : map,
 				    anchorPoint: new google.maps.Point(0, -29)
-				});//Get list of rows in the table
-		var table = document.getElementById("toppings");
-		var rows = table.getElementsByTagName("tr");
-
-		var selectedRow;
-
-		//Row callback; reset the previously selected row and select the new one
-		function SelectRow(row) {
-		    if (selectedRow !== undefined) {
-		        selectedRow.style.background = "#d8da3d";
-		    }
-		    selectedRow = row;
-		    selectedRow.style.background = "white";
-		}
+				});
 		
-		google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		  google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			    infowindow.close();
 			    marker.setVisible(false);
 			    var place = autocomplete.getPlace();
+			  	var stringAddress = document.getElementById ('create_location').value;
 			    if (!place.geometry) {
 			      return;
 			    }
@@ -223,7 +211,7 @@
 			    }
 			    marker.setPosition(place.geometry.location);
 			    marker.setVisible(true);
-
+			    
 			    var address = '';
 			    if (place.address_components) {
 			      address = [
@@ -233,7 +221,7 @@
 			      ].join(' ');
 			    }
 
-			    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+			    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address);
 			    infowindow.open(map, marker);
 			  });
 

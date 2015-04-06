@@ -24,14 +24,13 @@
 <meta http-equiv="Cache-Control" content="no-siteapp" />
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-<script type="text/javascript"
-	src="http://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=false"></script>
 <link rel="alternate icon" type="image/png" href="assets/i/favicon.png">
 <link rel="stylesheet" type="text/css"
 	href="http://cdn.amazeui.org/amazeui/2.2.1/css/amazeui.css">
 <script type="text/javascript"
 	src="http://cdn.amazeui.org/amazeui/2.2.1/js/amazeui.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=false&libraries=places"></script>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=false&libraries=places"></script>
 
 
 <style>
@@ -166,78 +165,75 @@
 </style>
 
 <script type="text/javascript">
+var geocoder;
+var map;
+var infowindow;
+var marker;
 	function initialize() {
-		var mapOptions = {
+
+geocoder = new google.maps.Geocoder();
+  var mapOptions = {
 			center : new google.maps.LatLng(43.663076, -79.395626),
 			zoom : 13,
 			mapTypeId : google.maps.MapTypeId.ROADMAP
 		};
-		var map = new google.maps.Map(document.getElementById("map_canvas"),
-				mapOptions);
-		
-		// this is for autocomplete address
-		var input = "";
-		var autocomplete = new google.maps.places.Autocomplete(input);
-		autocomplete.bindTo('bounds', map);
-		
-		// set marker and its infowindow
-		var infowindow = new google.maps.InfoWindow();
-		var marker = new google.maps.Marker(
-				{
-					map : map,
-				    anchorPoint: new google.maps.Point(0, -29)
-				});//Get list of rows in the table
-				
-
+  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+  
+	// set marker and its infowindow
+	infowindow = new google.maps.InfoWindow();
+	marker = new google.maps.Marker(
+			{
+				map : map,
+			    anchorPoint: new google.maps.Point(0, -29)
+			});//Get list of rows in the table
 
 		// add event listener to table rows
 		var rows = document.getElementById("availableEventTableBody").getElementsByTagName("tr").length;
 		var el;
 		for (var i = 0; i < rows; i++) { 
 			el = document.getElementById("singleAvailableEvent_"+i);
-			el.addEventListener("click", putLocationOnMap , false);
+			el.addEventListener("click", codeAddress , false);
 		}
 	}
 	
-	google.maps.event.addDomListener(window, 'load', initialize);
-	
-	function putLocationOnMap() {
-		var address = document.getElementById ("loc_" + event.currentTarget.id).innerText;
-		alert (address);
-		var autocomplete = new google.maps.places.Autocomplete(address);
-		autocomplete.bindTo('bounds', map);
-		
-		
-				
-		infowindow.close();
-	    marker.setVisible(false);
-	    var place = autocomplete.getPlace();
-	    if (!place.geometry) {
-	      return;
-	    }
-
-	    // If the place has a geometry, then present it on a map.
-	    if (place.geometry.viewport) {
-	      map.fitBounds(place.geometry.viewport);
+function codeAddress() {
+	infowindow.close();
+	marker.setVisible(false);
+  	var place = document.getElementById ("loc_" + event.currentTarget.id).innerText;
+  	var stringAddress = place;
+  	geocoder.geocode( { 'address': place}, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+    	
+    	// If the place has a geometry, then present it on a map.
+	    if (results[0].geometry.viewport) {
+	      map.fitBounds(results[0].geometry.viewport);
 	    } else {
-	      map.setCenter(place.geometry.location);
+	        map.setCenter(results[0].geometry.location);
+
 	      map.setZoom(17);  // Why 17? Because it looks good.
 	    }
-	    marker.setPosition(place.geometry.location);
+	    marker.setPosition(results[0].geometry.location);
 	    marker.setVisible(true);
 
-	    var address = '';
-	    if (place.address_components) {
-	      address = [
-	        (place.address_components[0] && place.address_components[0].short_name || ''),
-	        (place.address_components[1] && place.address_components[1].short_name || ''),
-	        (place.address_components[2] && place.address_components[2].short_name || '')
+	    var address2 = '';
+	    if (results[0].address_components) {
+	      address2 = [
+	        (results[0].address_components[0] && results[0].address_components[0].short_name || ''),
+	        (results[0].address_components[1] && results[0].address_components[1].short_name || ''),
+	        (results[0].address_components[2] && results[0].address_components[2].short_name || '')
 	      ].join(' ');
 	    }
 
-	    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+	    infowindow.setContent('<div><strong>' + stringAddress.split(",")[0] + '</strong><br>' + address2);
 	    infowindow.open(map, marker);
-	}
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+	
 </script>
 
 </head>
