@@ -8,8 +8,30 @@
 </head>
 <body>
 
-	<form action="UploadServlet" method=POST>
-		<input type=text name="haha"> <input type=submit>
-	</form>
+	<p>Hi Ryan,</p>
+	<p>
+		<br />
+	</p>
+	<p>Wecome to the event :</p>
+	<p>
+	<ul>
+		<li><span style="line-height: 1.5;">Title: &nbsp; &nbsp;
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></li>
+		<li><span style="line-height: 1.5;">Category: &nbsp;
+				&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span
+			style="line-height: 1.5;">&nbsp;</span></li>
+		<li><span style="line-height: 1.5;">Start Time:</span></li>
+		<li>End Time:</li>
+		<li>Address:</li>
+		<li>Contact:</li>
+	</ul>
+	<p>Wish you a good time!</p>
+	<p>
+		<br />
+	</p>
+	<p>Sincerely,</p>
+	<p>Ryan, Harris, Ling</p>
+	</p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
 </body>
 </html>

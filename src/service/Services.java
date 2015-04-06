@@ -1,10 +1,21 @@
 package service;
 
+import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import models.Event;
 import DAO.Constants_EventInfo;
@@ -279,6 +290,7 @@ public class Services {
 
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		Entity entity = ds.get(key);
+
 		@SuppressWarnings("unchecked")
 		List<String> peeps = (List<String>) entity
 				.getProperty(Constants_EventInfo.EVENT_PEEPS);
@@ -291,8 +303,56 @@ public class Services {
 		ds.put(entity);
 
 		MemcacheService mem = MemcacheServiceFactory.getMemcacheService();
-		mem.put(entity.getKey(),
-				new Event().fromKeyAndEntity(entity.getKey(), entity));
+		Event event = new Event().fromKeyAndEntity(entity.getKey(), entity);
+		mem.put(entity.getKey(), event);
+
+		DateFormat fmt = new SimpleDateFormat("yyyy.mm.dd E HH:mma");
+		String content = "<p>Hi " + user.getNickname()
+				+ ", wecome to the event!</p>" + "<ul><li>Title:  <strong>"
+				+ event.getTitle() + " </strong></li>" + "<li>Category: <strong>"
+				+ event.getCategory() + " </strong></li>" + "<li>Start Time: <strong>"
+				+ fmt.format(event.getStartDateTime()) + "</strong></li>"
+				+ "<li>End Time: <strong>" + fmt.format(event.getEndDateTime())
+				+ "</strong></li>" + "<li>Address: <strong>" + event.getLocation() + "</strong></li>"
+				+ "<li>Contact: <strong>" + event.getContact() + "</strong></li>"
+				+ "</ul><p>Wish you a good time!</p>"
+				+ "<br/><p>Sincerely,</p>" + "<p>Ryan, Harris, Ling</p>";
+
+		String subject = "[Teammate Finder] Successfully joined an event.";
+
+		sendNoticingMail(subject, content, email, user.getNickname());
+	}
+
+	/**
+	 * Send a noticing email
+	 * 
+	 * @param content
+	 *            message
+	 * @param recipient
+	 *            Email
+	 */
+	public void sendNoticingMail(String subject, String content,
+			String recipient, String nickName) {
+		Properties prop = new Properties();
+		Session session = Session.getDefaultInstance(prop);
+
+		Message msg = new MimeMessage(session);
+
+		try {
+			msg.setFrom(new InternetAddress("wyang.lau@gmail.com",
+					"Find a Teammate"));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					recipient, nickName));
+			msg.setSubject(subject);
+			msg.setContent(content, "text/html;charset = gbk");
+			Transport.send(msg);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
