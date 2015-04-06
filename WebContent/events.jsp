@@ -373,7 +373,8 @@
 						<div class="am-panel-hd"><%=Constants_General.HOME_JOINED%></div>
 						<div class="am-scrollable-vertical-small">
 							<table
-								class="am-table am-table-striped am-table-hover am-text-sm">
+								class="am-table am-table-striped am-table-hover am-text-sm"
+								>
 								<thead>
 									<tr>
 										<th></th>
@@ -400,9 +401,8 @@
 												onclick="quit('<%=KeyFactory.keyToString(e.getKey())%>')">Quit</button></td>
 										<td><%=e.getTitle()%></td>
 										<td><%=e.getContact()%></td>
-										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
-											<%=fmt.format(e.getEndDateTime())%></td>
-										<td id=loc_singleJoinedEvent_<%=i%>><%=e.getLocation()%></td>
+										<td><%=fmt.format(e.getStartDateTime())%>-<br><%=fmt.format(e.getEndDateTime())%></td>
+										<td id=loc_singleJoinedEvent_<%=i%> style="white-space:nowrap;"><%=e.getLocation()%></td>
 									</tr>
 									<%
 										}
@@ -439,7 +439,7 @@
 											<option value="i"><%=Constants_General.FILTER_CAPACITY_MORE_THAN_50%></option>
 									</select></td>
 									<td><select id="<%=Constants_General.FILTER_CATEGORY_ID%>"
-										data-am-selected="{btnWidth: 125, btnSize: 'sm', maxHeight: '1000px'}">
+										data-am-selected="{btnWidth: 150, btnSize: 'sm', maxHeight: '1000px'}">
 											<option value="s"><%=Constants_General.FILTER_CATEGORY_DEFAULT%></option>
 											<option value="p"><%=Constants_General.FILTER_CATEGORY_ALL%></option>
 											<option value="l"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
@@ -511,9 +511,8 @@
 											</div>
 										</td>
 										<td><%=e.getTitle()%></td>
-										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
-											<%=fmt.format(e.getEndDateTime())%></td>
-										<td id=loc_singleAvailableEvent_<%=i%>><%=e.getLocation()%></td>
+										<td><%=fmt.format(e.getStartDateTime())%>-<br><%=fmt.format(e.getEndDateTime())%></td>
+										<td id=loc_singleAvailableEvent_<%=i%> style="white-space:nowrap;"><%=e.getLocation()%></td>
 										<td></td>
 									</tr>
 									<%
