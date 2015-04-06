@@ -3,7 +3,7 @@ package DAO;
 public class Constants_General {
 
 	public static final String SITE_LOGO = "Teamagine";
-	public static final String SITE_SLOGAN = "Find a Teammate";
+	public static final String SITE_SLOGAN = "Find Teammates, Create Memories";
 	public static final String SITE_TITLEHOME = "Home";
 	public static final String SITE_TITLECREATE = "Management";
 	public static final String SITE_FOOTER = "© 2015Winter | ECE1779 | Ryan/Harris/Ling ";
