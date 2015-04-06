@@ -472,7 +472,7 @@
 					<tbody>
 						<%
 							List<Event> own = Services.retrieveHostersEvents();
-							DateFormat fmt = new SimpleDateFormat("HH:mma,MMM.d");
+							DateFormat fmt = new SimpleDateFormat("hh:mma,MMM.d");
 							for (Event e : own) {
 						%>
 						<tr>
