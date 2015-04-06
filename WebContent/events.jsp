@@ -378,9 +378,9 @@
 									<tr>
 										<th></th>
 										<th>Title</th>
+										<th>Contact</th>
 										<th>Schedule</th>
 										<th>Location</th>
-										<th>Contact</th>
 									</tr>
 								</thead>
 
@@ -399,10 +399,10 @@
 										<td><button class="am-btn am-btn-danger am-btn-xs"
 												onclick="quit('<%=KeyFactory.keyToString(e.getKey())%>')">Quit</button></td>
 										<td><%=e.getTitle()%></td>
+										<td><%=e.getContact()%></td>
 										<td>From:<%=fmt.format(e.getStartDateTime())%> <br>To:
 											<%=fmt.format(e.getEndDateTime())%></td>
 										<td id=loc_singleJoinedEvent_<%=i%>><%=e.getLocation()%></td>
-										<td><%=e.getContact()%></td>
 									</tr>
 									<%
 										}
@@ -432,6 +432,7 @@
 									<td><select id="<%=Constants_General.FILTER_CAPACITY_ID%>"
 										data-am-selected="{btnWidth: 190, btnSize: 'sm', maxHeight: '1000px'}">
 											<option value="n"><%=Constants_General.FILTER_CAPACITY_DEFAULT%></option>
+											<option value="z"><%=Constants_General.FILTER_CAPACITY_ALL%></option>
 											<option value="h"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_10%></option>
 											<option value="a"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_20%></option>
 											<option value="r"><%=Constants_General.FILTER_CAPACITY_LESS_THAN_50%></option>
@@ -440,6 +441,7 @@
 									<td><select id="<%=Constants_General.FILTER_CATEGORY_ID%>"
 										data-am-selected="{btnWidth: 125, btnSize: 'sm', maxHeight: '1000px'}">
 											<option value="s"><%=Constants_General.FILTER_CATEGORY_DEFAULT%></option>
+											<option value="s"><%=Constants_General.FILTER_CATEGORY_ALL%></option>
 											<option value="l"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
 											<option value="i"><%=Constants_General.FILTER_CATEGORY_PARTY%></option>
 											<option value="n"><%=Constants_General.FILTER_CATEGORY_SEMINAR%></option>

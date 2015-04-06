@@ -14,7 +14,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -170,7 +169,12 @@ public class Services {
 	private static void setFilter(Query query, String table, String dateFilter,
 			String capacityFilter, String categoryFilter) {
 		if (categoryFilter != null) {
-			if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
+			if (categoryFilter.equals(Constants_General.FILTER_CATEGORY_ALL)) {
+				query.setFilter(new FilterPredicate(
+						Constants_EventInfo.EVENTCATEGORY,
+						Query.FilterOperator.NOT_EQUAL, "asdfghjkl;'"));
+			}
+			else if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
 
 				Filter f1 = new FilterPredicate(
 						Constants_EventInfo.EVENTCATEGORY,
@@ -198,12 +202,18 @@ public class Services {
 
 		if (capacityFilter != null) {
 
+			long lAll = Long.MAX_VALUE;
 			long l10 = 10;
 			long l20 = 20;
 			long l50 = 50;
 			Filter capQueryFilter = null;
 
 			switch (capacityFilter) {
+			case Constants_General.FILTER_CAPACITY_ALL:
+				capQueryFilter = new FilterPredicate(
+						Constants_EventInfo.EVENTCAPACITY,
+						Query.FilterOperator.LESS_THAN, lAll);
+				break;
 			case Constants_General.FILTER_CAPACITY_LESS_THAN_10:
 				capQueryFilter = new FilterPredicate(
 						Constants_EventInfo.EVENTCAPACITY,
