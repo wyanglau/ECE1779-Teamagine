@@ -367,7 +367,7 @@ public class Services {
 
 		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  hh:mm");
 		String content = "<p>Hi " + user.getNickname()
-				+ ",</p><br> <p>Welcome to the event!</p>"
+				+ ",</p> <p>Welcome to the event!</p>"
 				+ "<table><tr><td>Title: </td><td> <strong>" + event.getTitle()
 				+ " </strong></td></tr>"
 				+ "<tr><td>Category:</td><td> <strong>" + event.getCategory()
