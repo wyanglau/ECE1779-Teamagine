@@ -98,25 +98,26 @@ public class AbortEventServlet extends HttpServlet {
 
 	private void sendEmail(Event event, List<String> peeps) {
 		User user = UserServiceFactory.getUserService().getCurrentUser();
-		DateFormat fmt = new SimpleDateFormat("yyyy.mm.dd E HH:mma");
+		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  hh:mm");
 
 		Services s = new Services();
 		String subject = "[Teammate Finder] We are sorry to notice that an event has been canceled.";
-		String content = "<p>Hi "
-				+ ", We are sorry to notice that the following event has been canceled by the host:</p>"
-				+ "<ul><li>Title:  <strong>" + event.getTitle()
-				+ " </strong></li>" + "<li>Category: <strong>"
-				+ event.getCategory() + " </strong></li>"
-				+ "<li>Start Time: <strong>"
-				+ fmt.format(event.getStartDateTime()) + "</strong></li>"
-				+ "<li>End Time: <strong>" + fmt.format(event.getEndDateTime())
-				+ "</strong></li>" + "<li>Address: <strong>"
-				+ event.getLocation() + "</strong></li>"
-				+ "<li>Contact: <strong>" + event.getContact()
-				+ "</strong></li>"
-				+ "</ul><p>Wish you a good time in rest of your events!</p>"
+		String content = "<p>Hi there,</p>"
+				+ "<p>We are sorry to notice that the following event has been canceled by the host:</p>"
+				+ "<table><tr><td>Title:  </td><td><strong>" + event.getTitle()
+				+ " </strong><td><tr>" + "<tr><td>Category:</td><td><strong>"
+				+ event.getCategory() + " </strong></td></tr>"
+				+ "<tr><td>Start Time: </td><td><strong>"
+				+ fmt.format(event.getStartDateTime()) + "</strong></td></tr>"
+				+ "<tr><td>End Time: </td><td><strong>" + fmt.format(event.getEndDateTime())
+				+ "</strong></td></tr>" + "<tr><td>Address: </td><td><strong>"
+				+ event.getLocation() + "</strong></td></tr>"
+				+ "<tr><td>Contact: </td><td><strong>" + event.getContact()
+				+ "</strong></td></tr>"
+				+ "</table><p>Wish you a good time in rest of your events!</p>"
 				+ "<br/><p>Sincerely,</p>" + "<p>Ryan, Harris, Ling</p>";
 
+		
 		String recipients = "";
 		for (String r : peeps) {
 			recipients += r + ",";

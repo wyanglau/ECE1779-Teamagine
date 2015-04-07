@@ -207,11 +207,10 @@ public class Services {
 			String capacityFilter, String categoryFilter) {
 		if (categoryFilter != null) {
 			if (categoryFilter.equals(Constants_General.FILTER_CATEGORY_ALL)) {
-				query.setFilter(new FilterPredicate( 	 	
-						Constants_EventInfo.EVENTCATEGORY, 	 	
-						Query.FilterOperator.NOT_EQUAL, "asdfghjkl;'")); 	 	
-			} 	 	
-			else if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
+				query.setFilter(new FilterPredicate(
+						Constants_EventInfo.EVENTCATEGORY,
+						Query.FilterOperator.NOT_EQUAL, "asdfghjkl;'"));
+			} else if (categoryFilter.equals(Constants_General.FILTER_OTHERS)) {
 
 				Filter f1 = new FilterPredicate(
 						Constants_EventInfo.EVENTCATEGORY,
@@ -233,7 +232,7 @@ public class Services {
 				query.setFilter(new FilterPredicate(
 						Constants_EventInfo.EVENTCATEGORY,
 						Query.FilterOperator.EQUAL, categoryFilter
-						.toLowerCase()));
+								.toLowerCase()));
 			}
 		}
 
@@ -245,11 +244,11 @@ public class Services {
 			Filter capQueryFilter = null;
 
 			switch (capacityFilter) {
-			case Constants_General.FILTER_CAPACITY_ALL: 	 	
-				capQueryFilter = new FilterPredicate( 	 	
-						Constants_EventInfo.EVENTCAPACITY, 	 	
-						Query.FilterOperator.LESS_THAN, lAll); 	 	
-				break; 
+			case Constants_General.FILTER_CAPACITY_ALL:
+				capQueryFilter = new FilterPredicate(
+						Constants_EventInfo.EVENTCAPACITY,
+						Query.FilterOperator.LESS_THAN, lAll);
+				break;
 			case Constants_General.FILTER_CAPACITY_LESS_THAN_10:
 				capQueryFilter = new FilterPredicate(
 						Constants_EventInfo.EVENTCAPACITY,
@@ -366,18 +365,21 @@ public class Services {
 			event = new Event().fromKeyAndEntity(key, ds.get(key));
 		}
 
-		DateFormat fmt = new SimpleDateFormat("yyyy.mm.dd E HH:mma");
+		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  hh:mm");
 		String content = "<p>Hi " + user.getNickname()
-				+ ", wecome to the event!</p>" + "<ul><li>Title:  <strong>"
-				+ event.getTitle() + " </strong></li>"
-				+ "<li>Category: <strong>" + event.getCategory()
-				+ " </strong></li>" + "<li>Start Time: <strong>"
-				+ fmt.format(event.getStartDateTime()) + "</strong></li>"
-				+ "<li>End Time: <strong>" + fmt.format(event.getEndDateTime())
-				+ "</strong></li>" + "<li>Address: <strong>"
-				+ event.getLocation() + "</strong></li>"
-				+ "<li>Contact: <strong>" + event.getContact()
-				+ "</strong></li>" + "</ul><p>Wish you a good time!</p>"
+				+ "</p>,<br> <p>Welcome to the event!</p>"
+				+ "<table><tr><td>Title: </td><td> <strong>" + event.getTitle()
+				+ " </strong></td></tr>"
+				+ "<tr><td>Category:</td><td> <strong>" + event.getCategory()
+				+ " </strong></td></tr>"
+				+ "<tr><td>Start Time:</td><td> <strong>"
+				+ fmt.format(event.getStartDateTime()) + "</strong></td></tr>"
+				+ "<tr><td>End Time:</td><td> <strong>"
+				+ fmt.format(event.getEndDateTime()) + "</strong></td></tr>"
+				+ "<tr><td>Address:</td><td> <strong>" + event.getLocation()
+				+ "</strong></td></tr>" + "<tr><td>Contact:</td><td> <strong>"
+				+ event.getContact() + "</strong></td></tr>"
+				+ "</table><p>Wish you a good time!</p>"
 				+ "<br/><p>Sincerely,</p>" + "<p>Ryan, Harris, Ling</p>";
 
 		String subject = "[Teammate Finder] Successfully joined an event.";
