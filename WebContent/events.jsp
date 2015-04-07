@@ -443,7 +443,7 @@
 											<option value="i"><%=Constants_General.FILTER_CAPACITY_MORE_THAN_50%></option>
 									</select></td>
 									<td><select id="<%=Constants_General.FILTER_CATEGORY_ID%>"
-										data-am-selected="{btnWidth: 150, btnSize: 'sm', maxHeight: '1000px'}">
+										data-am-selected="{btnWidth: 120, btnSize: 'sm', maxHeight: '1000px'}">
 											<option value="s"><%=Constants_General.FILTER_CATEGORY_DEFAULT%></option>
 											<option value="p"><%=Constants_General.FILTER_CATEGORY_ALL%></option>
 											<option value="l"><%=Constants_General.FILTER_CATEGORY_SPORT%></option>
