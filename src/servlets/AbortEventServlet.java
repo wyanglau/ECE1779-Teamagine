@@ -98,7 +98,7 @@ public class AbortEventServlet extends HttpServlet {
 
 	private void sendEmail(Event event, List<String> peeps) {
 		User user = UserServiceFactory.getUserService().getCurrentUser();
-		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  hh:mm");
+		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  HH:mm");
 
 		Services s = new Services();
 		String subject = "[Teammate Finder] We are sorry to notice that an event has been canceled.";

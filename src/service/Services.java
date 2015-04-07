@@ -381,7 +381,7 @@ public class Services {
 			event = new Event().fromKeyAndEntity(key, ds.get(key));
 		}
 
-		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  hh:mm");
+		DateFormat fmt = new SimpleDateFormat("yyyy.MMMMM.dd  HH:mm");
 		String content = "<p>Hi " + user.getNickname()
 				+ ",</p> <p>Welcome to the event!</p>"
 				+ "<table><tr><td>Title: </td><td> <strong>" + event.getTitle()
