@@ -501,7 +501,7 @@
 															<li>Category:<%=e.getCategory()%></li>
 															<li>Capacity: <%=e.getCapacity()%></li>
 															<li>Contact: <u><%=e.getContact()%></u></li>
-															<li><%=e.getDescription()%></li>
+															<li>Description: <%=e.getDescription()%></li>
 														</ul>
 													</div>
 												</div>
