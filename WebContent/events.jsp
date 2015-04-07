@@ -310,6 +310,8 @@
 	}
 
 	function join(key) {
+		
+		document.getElementById(key+"_join").disabled = true;
 		$.ajax({
 			type : "POST",
 			url : "JoinEventServlet",
@@ -325,6 +327,7 @@
 			}
 
 		})
+		
 	}
 
 	google.maps.event.addDomListener(window, 'load', initialize);
@@ -487,6 +490,7 @@
 										session.setAttribute(Constants_General.FILTER_CATEGORY_ID, null);
 										for (int i = 0; i < availables.size(); i++) {
 											Event e = availables.get(i);
+											String keyString = KeyFactory.keyToString(e.getKey());
 									%>
 									<tr id="singleAvailableEvent_<%=i%>">
 										<td>
@@ -506,8 +510,8 @@
 														</ul>
 													</div>
 												</div>
-												<button class="am-btn am-btn-success am-btn-xs"
-													onclick="join('<%=KeyFactory.keyToString(e.getKey())%>')">I'm
+												<button class="am-btn am-btn-success am-btn-xs" id=<%=keyString+"_join" %>
+													onclick="join('<%=keyString%>')">I'm
 													in</button>
 											</div>
 										</td>
