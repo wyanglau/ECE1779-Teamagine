@@ -103,17 +103,33 @@ public class Services {
 	public static List<Peeps> retrieveAllPeeps() {
 
 		List<Peeps> peeps = new LinkedList<Peeps>();
-
-		Query query = new Query(Constants_EventPeeps.TABLENAME);
+		
+		List<Key> keys = retrieveAllEventKeys(Constants_EventPeeps.TABLENAME, null, null, null);
+		List<Key> notExistedInMem = new LinkedList<Key>();
+		
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-
-		PreparedQuery result = ds.prepare(query);
-
-		for (Entity e : result.asIterable()) {
+		MemcacheService ms = MemcacheServiceFactory.getMemcacheService();
+		
+		
+		// inquire from memcache
+		for(Key key : keys){
+			String memKey=MemcacheOperator.parsePeepsKey(key);
+			if(ms.contains(memKey)){
+				
+				peeps.add((Peeps)ms.get(memKey));
+				
+			}
+			else{
+				notExistedInMem.add(key);
+			}
+		}
+		
+		
+		// inquire rest of those from datastore
+		for (Entity e : ds.get(notExistedInMem).values()) {
 
 			peeps.add(new Peeps().fromEntityAndKey(
 					(long) e.getProperty(Constants_EventPeeps.EVENTID), e));
-
 		}
 
 		return peeps;
