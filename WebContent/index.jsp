@@ -37,6 +37,17 @@
 #map_canvas {
 	height: 100%
 }
+
+.my-footer {
+	border-top: 1px solid #eeeeee;
+	padding: 10px 0;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.loginMenu {
+    text-align: center;
+}
 </style>
 
 <script type="text/javascript">
@@ -116,32 +127,25 @@
 	</div>
 	<div class="am-g">
 		<div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-			<h2>Login</h2>
-			<hr>
+		<div class="loginMenu">
+			<br>
+			<h2><%=Constants_General.SITE_LOGO%> Login</h2>
 			<div class="am-btn-group">
 				<a href="LoginServlet" class="am-btn am-btn-success am-btn-sm"><i
 					class="am-icon-google-plus-square am-icon-sm"></i> Google+</a>
 			</div>
-			<br> <br>
-			<form action="" method="post" class="am-form">
-				<label for="email">E-Mail:</label> <input type="email" name=""
-					id="email" value="" required/> <br> <label for="password">PASSWORD:</label>
-				<input type="password" name="" id="password" value="" required/> <br>
-				<label for="remember-me"> <input id="remember-me"
-					type="checkbox"> Remember Me
-				</label> <br />
-				<div class="am-cf">
-					<input type="submit" name="" value="Login"
-						class="am-btn am-btn-primary am-btn-sm am-fl"> <input
-						type="submit" name="" value="Forget Password? "
-						class="am-btn am-btn-default am-btn-sm am-fr">
-				</div>
-			</form>
-			<hr>
-			<div align=center>
-				<small><%=Constants_General.SITE_FOOTER%></small>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
 			</div>
 		</div>
 	</div>
+	<footer class="my-footer">
+		<p>
+			<%=Constants_General.SITE_SLOGAN%><br> <small><%=Constants_General.SITE_FOOTER%></small>
+		</p>
+	</footer>
 </body>
 </html>
