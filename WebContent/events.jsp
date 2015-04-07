@@ -402,7 +402,7 @@
 										<td><%=e.getTitle()%></td>
 										<td><%=e.getContact()%></td>
 										<td><%=fmt.format(e.getStartDateTime())%>-<br><%=fmt.format(e.getEndDateTime())%></td>
-										<td id=loc_singleJoinedEvent_<%=i%> style="white-space:nowrap;"><%=e.getLocation()%></td>
+										<td id=loc_singleJoinedEvent_<%=i%>><%=e.getLocation()%></td>
 									</tr>
 									<%
 										}
@@ -512,7 +512,7 @@
 										</td>
 										<td><%=e.getTitle()%></td>
 										<td><%=fmt.format(e.getStartDateTime())%>-<br><%=fmt.format(e.getEndDateTime())%></td>
-										<td id=loc_singleAvailableEvent_<%=i%> style="white-space:nowrap;"><%=e.getLocation()%></td>
+										<td id=loc_singleAvailableEvent_<%=i%>><%=e.getLocation()%></td>
 										<td></td>
 									</tr>
 									<%
