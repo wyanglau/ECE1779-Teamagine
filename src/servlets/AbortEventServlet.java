@@ -121,7 +121,7 @@ public class AbortEventServlet extends HttpServlet {
 		for (String r : peeps) {
 			recipients += r + ",";
 		}
-		recipients = recipients.substring(0, recipients.length() - 2);
+		recipients = recipients.substring(0, recipients.length() - 1);
 		s.sendNoticingMail(subject, content, recipients, user.getNickname());
 	}
 }
