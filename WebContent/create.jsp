@@ -384,7 +384,7 @@
 									<div class="am-form-group">
 										<input type="number" id="create_capacity" min="1"
 											name="create_capacity"
-											placeholder="Recommend Number of 
+											placeholder="Recommended Number of 
 											Participants. (Numbers Only)"
 											required />
 									</div>
